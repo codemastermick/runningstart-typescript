@@ -1,0 +1,10 @@
+{
+  "backend": "sqlite",
+  "features": [
+    {
+      "new-feature": {
+        "percentage": 0.1
+      }
+    }
+  ]
+}
