@@ -8,6 +8,10 @@ export default class Config {
   coverage: boolean;
   docs: boolean;
   gh_pages: boolean;
+  commitizen: boolean;
+  changelog: boolean;
+  ci: boolean;
+  ci_choice: 'None' | 'Circle' | 'Travis' | 'GitHub';
   extensions: string[];
 
   constructor() {
@@ -20,6 +24,10 @@ export default class Config {
     this.coverage = true;
     this.docs = true;
     this.gh_pages = true;
+    this.commitizen = true;
+    this.changelog = true;
+    this.ci = true;
+    this.ci_choice = 'Circle';
     this.extensions = [];
   }
 }

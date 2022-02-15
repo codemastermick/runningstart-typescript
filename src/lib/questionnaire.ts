@@ -1,5 +1,8 @@
 import inquirer, { Answers } from 'inquirer';
 import Config from '../config';
+import changelogQuestions from './questions/changelog.questions';
+import ciQuestions from './questions/ci.questions';
+import commitizenQuestions from './questions/commitizen.questions';
 import documentationQuestions from './questions/documentation.questions';
 import lintingExtensionQuestions from './questions/linting.extensions.questions';
 import lintingQuestions from './questions/linting.questions';
@@ -49,7 +52,30 @@ async function questionnaire(): Promise<Config> {
                   inquirer.prompt(documentationQuestions).then((answers) => {
                     config.docs = answers.docs;
                     config.gh_pages = answers.gh_pages;
-                    resolve(config);
+                    inquirer.prompt(commitizenQuestions).then((answers) => {
+                      config.commitizen = answers.cz;
+                      inquirer.prompt(changelogQuestions).then((answers) => {
+                        config.changelog = answers.changelog;
+                        inquirer.prompt(ciQuestions).then((answers) => {
+                          config.ci = answers.ci;
+                          let ci: 'None' | 'Circle' | 'Travis' | 'GitHub';
+                          ci = 'None';
+                          switch (answers.ci_choice) {
+                            case 'Circle CI':
+                              ci = 'Circle';
+                              break;
+                            case 'GitHub Actions':
+                              ci = 'GitHub';
+                              break;
+                            default:
+                              break;
+                          }
+                          config.ci_choice = ci;
+                          //TODO resume work here
+                          resolve(config);
+                        });
+                      });
+                    });
                   });
                 });
               });
