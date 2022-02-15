@@ -1,7 +1,11 @@
-const world = 'world';
+import Config from './config';
+import questionnaire from './lib/questionnaire';
 
-export function hello(name: string = world): string {
-  return `Hello ${name}!`;
-}
+let config: Config;
 
-console.log(hello());
+questionnaire().then((results) => {
+  config = results;
+  console.log(JSON.stringify(config));
+});
+
+// build project here using config file

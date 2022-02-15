@@ -10,7 +10,18 @@ orbs:
 
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
-  full-load:
+  lint:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
+      - run:
+          name: Run ESLint
+          command: npm run lint
+      - run:
+          name: Format code with prettier
+          command: npm run format
+  compile:
     # These next lines define a Docker executor: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
@@ -19,7 +30,6 @@ jobs:
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
     steps:
-      # Checkout the code as the first step.
       - checkout
       # Next, the node orb's install-packages step will install the dependencies from a package.json.
       # The orb install-packages step will also automatically cache them for faster future runs.
@@ -27,20 +37,27 @@ jobs:
           # If you are using yarn, change the line below from "npm" to "yarn"
           pkg-manager: npm
       - run:
-          name: Run eslint
-          command: npm run lint
-      - run:
-          name: Format code with prettier
-          command: npm run format
-      - run:
           name: Compile project
-          command: npm run build      
+          command: npm run build
+  test:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
       - run:
           name: Run tests with coverage
           command: npm run test:coverage
+  docs:
+    docker:
+      - image: cimg/node:16.10
+    steps:
+      - checkout
       - run:
           name: Compile docs
           command: npm run build:docs
+      - run:
+          name: Publish docs
+          command: npm run publish:docs
 
 workflows:
   # Below is the definition of your workflow.
@@ -49,6 +66,8 @@ workflows:
   # For more details on extending your workflow, see the configuration docs: https://circleci.com/docs/2.0/configuration-reference/#workflows
   sample:
     jobs:
-      - full-load
+      - lint
+      - compile
+      - test
       # For running simple node tests, you could optionally use the node/test job from the orb to replicate and replace the job above in fewer lines.
       # - node/test
